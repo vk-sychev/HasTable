@@ -61,11 +61,12 @@ begin
           edtActors.SetFocus;
           exit
         end;
-      info.FilmName := trim(edtName.Text);
-      info.Director := trim(edtDirector.Text);
-      info.Actors := trim(edtActors.Text);
-      info.Description := trim(mmoDescription.Text);
-      ModalResult := mrOk
+      info:=TInfo.Create(trim(edtName.Text),trim(edtDirector.Text),trim(edtActors.Text), trim(mmoDescription.Text));
+      {info.FName := trim(edtName.Text);
+      info.Direct := trim(edtDirector.Text);
+      info.Act := trim(edtActors.Text);
+      info.Descript := trim(mmoDescription.Text); }
+      ModalResult := mrOk;
     end;
 end;
 
@@ -75,10 +76,10 @@ begin
   if IsView then
     begin
       info := AInfo;
-      edtName.Text := info.FilmName;
-      edtDirector.Text := info.Director;
-      edtActors.Text := info.Actors;
-      mmoDescription.Text := info.Description;
+      edtName.Text := info.FName;
+      edtDirector.Text := info.Direct;
+      edtActors.Text := info.Act;
+      mmoDescription.Text := info.Descript;
     end;
   edtName.ReadOnly := IsView;
   //!!!!!!!!!!!!!!!!!!!

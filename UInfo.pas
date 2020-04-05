@@ -6,23 +6,57 @@ interface
   uses SysUtils, Grids, Classes;
 type
   TKey = string[255];
-  TInfo = record
+  TInfo = class
+    private
       FilmName : TKey;
-      Director : string[255];
-      Actors : string[255];
-      Description : string[255];
-    end;
-
+      Director : string;
+      Actors : string;
+      Description : string;
+    public
+  constructor Create; overload;
+  constructor Create(AFilmName:TKey; ADirector, AActors, ADescription:string);  overload;
   function HashF(key : TKey) : integer;
   function IsEqualKey (k1, k2 : TKey) : boolean;
   procedure SaveInfo(var f : TextFile; info: TInfo);
   function LoadInfo(var f : TextFile; var info: TInfo) : boolean;
   procedure ShowTitle(SG : TStringGrid);
   procedure ShowInfo(info : TInfo; Row : TStrings);
+  property FName: TKey
+  read FilmName write FilmName;
+
+  property Direct: string
+  read Director write Director;
+
+  property Act: string
+  read Actors write Actors;
+
+  property Descript: string
+  read Description write Description;
+
+
+  end;
 
 implementation
 
-function HashF(key : TKey) : integer;
+constructor TInfo.Create;
+begin
+  FilmName:='';
+  Director:='';
+  Actors:='';
+  Description:='';
+  inherited Create;
+end;
+
+constructor TInfo.Create(AFilmName:TKey; ADirector, AActors, ADescription:string);
+begin
+  inherited Create;
+  FilmName:=AFilmName;
+  Director:=ADirector;
+  Actors:=AActors;
+  Description:=ADescription;
+end;
+
+function TInfo.HashF(key : TKey) : integer;
 var
   i : integer;
 begin
@@ -33,12 +67,12 @@ begin
     end;
 end;
 
-function IsEqualKey (k1, k2 : TKey) : boolean;
+function TInfo.IsEqualKey (k1, k2 : TKey) : boolean;
 begin
   Result := k1 = k2;
 end;
 
-procedure SaveInfo(var f : TextFile; info: TInfo);
+procedure TInfo.SaveInfo(var f : TextFile; info: TInfo);
 begin
   with info do
     begin
@@ -86,12 +120,12 @@ begin
       end;
 end;
 
-function LoadInfo(var f : TextFile; var info : TInfo) : boolean;
+function TInfo.LoadInfo(var f : TextFile; var info : TInfo) : boolean;
 begin
   Result := TryLoadInfo(f, info);
 end;
 
-procedure ShowTitle(SG : TStringGrid);
+procedure TInfo.ShowTitle(SG : TStringGrid);
 begin
   with SG do
     begin
@@ -111,7 +145,7 @@ begin
     end;
 end;
 
-procedure ShowInfo(info : TInfo; Row : TStrings);
+procedure TInfo.ShowInfo(info : TInfo; Row : TStrings);
 begin
   Row[0] := info.FilmName;
   Row[1] := info.Director;

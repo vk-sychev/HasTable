@@ -49,12 +49,14 @@ begin
 end;
 
 constructor THashTableGUI.Create(ASG: TStringGrid; AC, AD : Integer; ASize : integer);
+var
+  info:TInfo;
 begin
   FStringGrid := ASG;
   inherited Create(ASize);
   FFileName := '';
   FModified := false;
-  ShowTitle(FStringGrid);
+  info.ShowTitle(FStringGrid);
 end;
 
 function THashTableGUI.Delete(key : TKey): boolean;
@@ -64,6 +66,8 @@ begin
 end;
 
 function THashTableGUI.Load(AFileName: string; AIsTxt: Boolean): boolean;
+var
+  info:TInfo;
 begin
   FIsTxt := AIsTxt;
   FFileName := AFileName;
@@ -72,7 +76,7 @@ begin
   else
     Result := LoadFromBinFile(AFileName);
   FModified := False;
-  ShowTitle(FStringGrid);
+  info.ShowTitle(FStringGrid);
   PrintToGrid(FStringGrid);
 end;
 

@@ -55,10 +55,10 @@ var
   i, c, d : Integer;
   Found, Stop, ok : Boolean;
 begin
-  a0 := HashFunc(info.FilmName);
+  a0 := HashFunc(info.FName);
   a := a0;
   i := 0;
-  c:= HashFunc(info.FilmName);
+  c:= HashFunc(info.FName);
   Stop := False;
   Found := False;
   ok := false;
@@ -77,7 +77,7 @@ begin
         end;
       csFull:
         begin
-          if IsEqualKey(info.FilmName, FTable[a].info.FilmName) then
+          if info.IsEqualKey(info.FName, FTable[a].info.FName) then
             ok := true
           else
             a := NextCell(a0, i, c);
@@ -175,8 +175,10 @@ begin
 end;
 
 function THashTable.HashFunc(key: TKey): integer;
+var
+  info: TInfo;
 begin
-  Result := HashF(key) mod FSize;
+  Result := info.HashF(key) mod FSize;
 end;
 
 function THashTable.IndexOf(key: TKey): integer;
@@ -184,6 +186,7 @@ var
   a0, a, c : integer;
   Stop, Found : Boolean;
   i : Integer;
+  info: TInfo;
 begin
   a0 := HashFunc(key);
   c:= HashFunc(key);
@@ -196,7 +199,7 @@ begin
       csFree : Stop := True;
       csDel : a := NextCell(a0, i, c);
       csFull:
-        if IsEqualKey(key, FTable[a].info.FilmName) then
+        if info.IsEqualKey(key, FTable[a].info.FName) then
           Found := true
         else
           a := NextCell(a0, i, c);
@@ -251,7 +254,7 @@ begin
   Reset(f);
   Result := true;
   while not Eof(f) and Result do
-    if LoadInfo(f, info) then
+    if info.LoadInfo(f, info) then
       Result := Add(info) = arOk
     else
       Result := False;
@@ -268,6 +271,7 @@ procedure THashTable.PrintToGrid(SG: TStringGrid);
 var
   i : integer;
   j : Integer;
+  info: TInfo;
 begin
   if FCount = 0 then
     begin
@@ -282,7 +286,7 @@ begin
       if FTable[i].state = csFull then
         begin
           Inc (j);
-          ShowInfo(FTable[i].info, SG.Rows[j]);
+          info.ShowInfo(FTable[i].info, SG.Rows[j]);
         end;
 end;
 
@@ -304,13 +308,14 @@ procedure THashTable.SaveToFile(FileName: string);
 var
   f : TextFile;
   i : Integer;
+  info:TInfo;
 begin
   AssignFile(f, FileName);
   Rewrite(f);
   if FCount>0 then
     for i:= 0 to FSize-1 do
       if FTable[i].state = csFull then
-        SaveInfo(f, FTable[i].info);
+        info.SaveInfo(f, FTable[i].info);
   CloseFile(f);
 end;
 
